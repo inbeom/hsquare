@@ -72,7 +72,7 @@ module Hsquare
     # Returns Number of days before invalidation.
     def register
       Hsquare::Client::Admin.post('/v1/push/register', body: {
-        uuid: user_id, device_id: id, push_type: type, push_token: token
+        uuid: user_id, device_id: id, push_type: type, push_token: token.gsub(/\s/, '')
       })
     end
 
