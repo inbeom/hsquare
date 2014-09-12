@@ -50,10 +50,10 @@ Admin 키는 외부에 노출되지 않도록 보안에 주의를 기울여야 �
 
 ```ruby
 device = Hsquare::Device.new(
-  id: (애플리케이션 내 기기 ID),
-  user_id: (애플리케이션 사용자 ID),
-  token: '푸시 토큰',
-  type: '(apns 또는 gcm)'
+  id: 'device-1',           # 애플리케이션 내 기기 ID
+  user_id: 1,               # 애플리케이션 사용자 ID
+  token: 'apns-push-token', # 푸시 토큰
+  type: 'apns'              # apns 또는 gcm
 )
 ```
 
@@ -61,7 +61,7 @@ device = Hsquare::Device.new(
 있습니다.
 
 ```ruby
-device.register # Open Platform API가 호출됩니다.
+device.register # 기기를 등록하는 Open Platform API를 호출합니다.
 ```
 
 클라이언트에서 푸시 토큰을 등록하도록 처리되어 있다면 이 과정은 거치지 않아도
