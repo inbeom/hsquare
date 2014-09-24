@@ -41,6 +41,26 @@ end
 Admin 키는 외부에 노출되지 않도록 보안에 주의를 기울여야 합니다. 환경 변수
 등으로 소스 컨트롤에서 분리하여 설정하도록 처리하는 것을 추천합니다.
 
+#### 여러 애플리케이션 동시에 사용하기
+
+어떤 클라이언트 애플리케이션의 패키징이 여러 가지로 달라질 수 있는 경우에
+여러 애플리케이션을 등록하고 사용할 수 있습니다. 이러한 경우 아래와 같이
+해당 애플리케이션들의 Admin key를 설정합니다.
+
+```ruby
+# In config/initializers/hsquare.rb
+
+Hsquare.config do |config|
+  config.application(:main) do |application|
+    application.admin_key = 'Main 애플리케이션의 Admin 키'
+  end
+
+  config.application(:beta) do |application|
+    application.admin_key = 'Beta 애플리케이션의 Admin 키'
+  end
+end
+```
+
 ### 푸시 알림
 
 #### 기기의 푸시 토큰 등록
@@ -54,6 +74,7 @@ device = Hsquare::Device.new(
   user_id: 1,               # 애플리케이션 사용자 ID
   token: 'apns-push-token', # 푸시 토큰
   type: 'apns'              # apns 또는 gcm
+  application: nil          # 애플리케이션 종류, 주어지지 않은 경우 첫 (혹은 default) 애플리케이션
 )
 ```
 
