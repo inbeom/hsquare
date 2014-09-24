@@ -65,7 +65,9 @@ module Hsquare
     #
     # Returns nothing.
     def deliver
-      Hsquare::Client::Admin.post('/v1/push/send', body: payload)
+      Hsquare.config.applications.each do |application|
+        application.admin_client.post('/v1/push/send', body: payload)
+      end
     end
 
     protected

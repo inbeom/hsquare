@@ -6,7 +6,13 @@ RSpec.describe Hsquare::Notification do
     let(:message) { 'message' }
     let(:notification) { Hsquare::Notification.new(recipient_id: recipient_id, message: message) }
 
-    it { expect(Hsquare::Client::Admin).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json }); notification.deliver }
+    it do
+      Hsquare.config.applications.each do |application|
+        expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
+      end
+
+      notification.deliver
+    end
   end
 
   describe '#recipient_id=' do

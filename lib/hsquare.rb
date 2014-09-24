@@ -1,6 +1,7 @@
 require 'httparty'
 
 require 'hsquare/version'
+require 'hsquare/application'
 require 'hsquare/configuration'
 require 'hsquare/client'
 require 'hsquare/device'
@@ -31,14 +32,27 @@ module Hsquare
   #
   # Returns nothing.
   def self.apply(configuration)
-    Hsquare::Client::Admin.admin_key = configuration.admin_key if configuration.admin_key
-
     if configuration.http_proxy
       http_proxy_uri = URI.parse(configuration.http_proxy)
 
       Hsquare::Client.http_proxy http_proxy_uri.host, http_proxy_uri.port
     end
 
+    configuration.applications.each(&:refresh_admin_client)
+
     @configuration = configuration
+  end
+
+  # Public: Finds application with given label.
+  #
+  # label - Label of the applcation.
+  #
+  # Returns registered Hsquare::Application object.
+  def self.application(label = nil)
+    if label
+      @configuration.applications.detect { |application| application.label == label.to_sym }
+    else
+      @configuration.default_application
+    end
   end
 end

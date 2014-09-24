@@ -16,11 +16,13 @@ module Hsquare
     # Public: Fetch devices for given user.
     #
     # user_or_user_id - User or ID of user.
+    # options         - Further options
+    #                   :application - Label of the application.
     #
     # Returns Array of HSquare::Device objects retrieved from the server.
-    def self.find_by_user_id(user_or_user_id)
+    def self.find_by_user_id(user_or_user_id, options = {})
       user_id = user_or_user_id.respond_to?(:id) ? user_or_user_id.id : user_or_user_id
-      response = Hsquare::Client::Admin.get('/v1/push/tokens', query: { uuid: user_id })
+      response = Hsquare.application(options[:application]).admin_client.get('/v1/push/tokens', query: { uuid: user_id })
 
       response.parsed_response.map do |device_response|
         new(device_response.symbolize_keys)
@@ -65,13 +67,14 @@ module Hsquare
       @user_id = attributes[:user_id] || attributes[:uuid]
       @token = attributes[:token] || attributes[:push_token]
       @type = attributes[:type] || attributes[:push_type]
+      @application = attributes[:application]
     end
 
     # Public: Registers the device via Kakao API.
     #
     # Returns Number of days before invalidation.
     def register
-      Hsquare::Client::Admin.post('/v1/push/register', body: {
+      client.post('/v1/push/register', body: {
         uuid: user_id, device_id: id, push_type: type, push_token: token.gsub(/\s/, '')
       })
     end
@@ -80,9 +83,18 @@ module Hsquare
     #
     # Returns Number of days before invalidation.
     def unregister
-      Hsquare::Client::Admin.post('/v1/push/deregister', body: {
+      client.post('/v1/push/deregister', body: {
         uuid: user_id, device_id: id, push_type: type
       })
+    end
+
+    protected
+
+    # Internal: Client to use for API request.
+    #
+    # Returns Hsquare::Client class for associated application.
+    def client
+      Hsquare.application(@application).admin_client
     end
   end
 end
