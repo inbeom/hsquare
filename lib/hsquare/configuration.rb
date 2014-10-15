@@ -13,6 +13,15 @@ module Hsquare
       default_application.admin_key = admin_key
     end
 
+    # Public: Sets API base URI for default application.
+    #
+    # base_uri - Base URI to set.
+    #
+    # Returns newly set base URI.
+    def base_uri=(base_uri)
+      default_application.base_uri = base_uri
+    end
+
     # Public: Retrieves default application.
     #
     # Returns Hsquare::Application object for default application.

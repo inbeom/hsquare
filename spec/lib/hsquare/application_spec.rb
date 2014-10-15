@@ -13,6 +13,14 @@ RSpec.describe Hsquare::Application do
       it { expect(application.admin_client.default_options[:headers]['Authorization']).to eq("KakaoAK #{admin_key}") }
     end
 
+    context 'when base_uri is set' do
+      let(:base_uri) { 'http://localhost:3000' }
+      let(:application) { Hsquare::Application.new base_uri: base_uri }
+
+      it { expect(application.admin_client.default_options).not_to be_empty }
+      it { expect(application.admin_client.default_options[:base_uri]).to eq(base_uri) }
+    end
+
     context 'when proxy is set' do
       let(:configuration) { Hsquare::Configuration.new.tap { |c| c.http_proxy = 'http://proxy.com:80' } }
 

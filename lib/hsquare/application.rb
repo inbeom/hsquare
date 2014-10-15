@@ -7,6 +7,9 @@ module Hsquare
     # Public: Admin access key of the application.
     attr_accessor :admin_key
 
+    # Public: API base URI for the application.
+    attr_accessor :base_uri
+
     # Public: Initializes new application object.
     #
     # attributes - Attributes for the new application.
@@ -17,6 +20,7 @@ module Hsquare
     def initialize(attributes = {})
       @label = attributes[:label]
       @admin_key = attributes[:admin_key]
+      @base_uri = attributes[:base_uri]
     end
 
     # Public: Client with admin key associated with the application.
@@ -24,6 +28,7 @@ module Hsquare
     # Returns client class for the application inherits Hsquare::Client.
     def admin_client
       @admin_client ||= Class.new(Hsquare::Client::Admin).tap do |klass|
+        klass.base_uri(base_uri) if base_uri
         klass.admin_key = admin_key if admin_key
       end
     end
