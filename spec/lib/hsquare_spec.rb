@@ -35,7 +35,7 @@ RSpec.describe Hsquare do
     it { expect(Hsquare.application(:first).admin_key).to eq('firstkey') }
     it { expect(Hsquare.application(:second)).not_to be_nil }
     it { expect(Hsquare.application(:second).admin_key).to eq('secondkey') }
-    it { expect(Hsquare.application(:third)).to be_nil }
+    it { expect(Hsquare.application(:third)).to eq(Hsquare.application(:first)) }
     it { expect(Hsquare.application).not_to be_nil }
     it { expect(Hsquare.application.label).to eq(:first) }
     it { expect(Hsquare.application.admin_key).to eq('firstkey') }

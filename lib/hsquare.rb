@@ -50,7 +50,7 @@ module Hsquare
   # Returns registered Hsquare::Application object.
   def self.application(label = nil)
     if label
-      @configuration.applications.detect { |application| application.label == label.to_sym }
+      @configuration.applications.detect { |application| application.label == label.to_sym } || @configuration.default_application
     else
       @configuration.default_application
     end
