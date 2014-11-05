@@ -9,7 +9,7 @@ RSpec.describe Hsquare::Notification do
     context 'when no app ids is set' do
       it do
         Hsquare.config.applications.each do |application|
-          expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
+          expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message, sound: nil } } }.to_json })
         end
 
         notification.deliver
@@ -21,7 +21,7 @@ RSpec.describe Hsquare::Notification do
 
       it do
         Hsquare.config.applications.each do |application|
-          expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
+          expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message, sound: nil } } }.to_json })
         end
 
         notification.deliver

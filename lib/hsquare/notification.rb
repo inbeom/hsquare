@@ -106,7 +106,7 @@ module Hsquare
       {
         collapse: collapse,
         delay_while_idle: idle_delay,
-        custom_field: (extra || {}).merge(message: message)
+        custom_field: (extra || {}).merge(message: message, sound: sound)
       }.keep_if { |_, v| !v.nil? }
     end
   end
