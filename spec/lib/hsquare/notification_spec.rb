@@ -6,12 +6,38 @@ RSpec.describe Hsquare::Notification do
     let(:message) { 'message' }
     let(:notification) { Hsquare::Notification.new(recipient_id: recipient_id, message: message) }
 
-    it do
-      Hsquare.config.applications.each do |application|
-        expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
-      end
+    context 'when no app ids is set' do
+      it do
+        Hsquare.config.applications.each do |application|
+          expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
+        end
 
-      notification.deliver
+        notification.deliver
+      end
+    end
+
+    context 'when app ids is set' do
+      let(:notification) { Hsquare::Notification.new(recipient_id: recipient_id, message: message, app_ids: [nil]) }
+
+      it do
+        Hsquare.config.applications.each do |application|
+          expect(application.admin_client).to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
+        end
+
+        notification.deliver
+      end
+    end
+
+    context 'when app ids is set' do
+      let(:notification) { Hsquare::Notification.new(recipient_id: recipient_id, message: message, app_ids: [:not_exist]) }
+
+      it do
+        Hsquare.config.applications.each do |application|
+          expect(application.admin_client).not_to receive(:post).with('/v1/push/send', body: { uuids: [recipient_id].to_json, push_message: { for_apns: { push_alert: true, message: message }, for_gcm: { delay_while_idle: false, custom_field: { message: message } } }.to_json })
+        end
+
+        notification.deliver
+      end
     end
   end
 

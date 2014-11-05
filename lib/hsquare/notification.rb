@@ -25,6 +25,9 @@ module Hsquare
     # Public: Extra payload.
     attr_accessor :extra
 
+    # Public: IDs of Hsquare applications to deliver.
+    attr_accessor :app_ids
+
     # Public: Initializes new notification object.
     #
     # attributes - Attributes of the notification.
@@ -39,6 +42,7 @@ module Hsquare
     #              :idle_delay    - Whether GCM message delivery is delayed
     #                               while device is idle (default: false).
     #              :extra         - Extra payload (optinoal).
+    #              :app_ids       - IDs of Hsquare applications to deliver.
     #
     # Returns newly initialized notification object.
     def initialize(attributes = {})
@@ -50,6 +54,7 @@ module Hsquare
       @collapse = attributes[:collapse]
       @idle_delay = attributes.has_key?(:idle_delay) ? attributes[:idle_delay] : false
       @extra = attributes[:extra]
+      @app_ids = attributes[:app_ids]
     end
 
     # Public: Helper method to set recipient_ids with single ID.
@@ -66,7 +71,9 @@ module Hsquare
     # Returns nothing.
     def deliver
       Hsquare.config.applications.each do |application|
-        application.admin_client.post('/v1/push/send', body: payload)
+        if !app_ids || app_ids.include?(application.label)
+          application.admin_client.post('/v1/push/send', body: payload)
+        end
       end
     end
 
